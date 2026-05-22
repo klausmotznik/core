@@ -1,0 +1,33 @@
+{
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.19/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.19",
+  "version": "1.0.0",
+  "id": "a7f2e9b1-3c4d-5f6a-8901-bcdef1234567",
+  "developer": {
+    "name": "Your Organization",
+    "websiteUrl": "https://example.com",
+    "privacyUrl": "https://example.com/privacy",
+    "termsOfUseUrl": "https://example.com/terms"
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "name": {
+    "short": "Sales Lead Analyzer",
+    "full": "Sales Lead Analyzer – DACH ERP Lead Qualifizierung"
+  },
+  "description": {
+    "short": "B2B Sales Leads im DACH-Markt finden und qualifizieren",
+    "full": "Recherchiert potenzielle B2B Sales Leads im DACH-Markt nach Branche, Region, eingesetztem ERP-System (Navision, SAP, AX, Pro Alpha, Oracle) und Unternehmensgröße. Analysiert Unternehmenswebsites und Jobportale auf ERP-Hinweise und qualifiziert Leads automatisch mit AI."
+  },
+  "accentColor": "#0078D4",
+  "copilotAgents": {
+    "declarativeAgents": [
+      {
+        "id": "salesLeadAnalyzer",
+        "file": "declarativeAgent.json"
+      }
+    ]
+  }
+}
