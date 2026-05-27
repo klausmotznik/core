@@ -1,0 +1,210 @@
+openapi: 3.0.3
+info:
+  title: Sales Lead Analyzer API
+  description: >
+    Recherchiert und qualifiziert B2B Sales Leads für den DACH-Markt.
+    Analysiert Unternehmenswebsites und Jobportale auf ERP-Hinweise.
+  version: 1.0.0
+
+servers:
+  - url: https://YOUR_BACKEND_URL
+    description: Production Backend
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /api/search-leads:
+    post:
+      operationId: searchLeads
+      summary: Sales Leads suchen und qualifizieren
+      description: >
+        Durchsucht das Internet nach Unternehmen in der angegebenen Branche und Region,
+        analysiert deren Websites und Stellenanzeigen auf Hinweise für das gesuchte ERP-System
+        und qualifiziert die Leads automatisch mit einem Score von 0–100.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadSearchRequest'
+      responses:
+        '200':
+          description: Liste qualifizierter Sales Leads, sortiert nach Score
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadSearchResponse'
+        '401':
+          description: Ungültiger API-Schlüssel
+
+  /health:
+    get:
+      operationId: healthCheck
+      summary: Service-Status prüfen
+      security: []
+      responses:
+        '200':
+          description: Service ist verfügbar
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+  schemas:
+    LeadSearchRequest:
+      type: object
+      required:
+        - industry
+        - region
+        - erp_system
+        - employee_size
+      properties:
+        industry:
+          type: string
+          description: "Branche, z.B. Maschinenbau, Handel, Logistik, Fertigung"
+          example: "Maschinenbau"
+        region:
+          type: string
+          description: "Region oder Bundesland"
+          enum:
+            - "DACH"
+            - "Deutschland"
+            - "Österreich"
+            - "Schweiz"
+            - "Baden-Württemberg"
+            - "Bayern"
+            - "Berlin"
+            - "Brandenburg"
+            - "Bremen"
+            - "Hamburg"
+            - "Hessen"
+            - "Mecklenburg-Vorpommern"
+            - "Niedersachsen"
+            - "Nordrhein-Westfalen"
+            - "Rheinland-Pfalz"
+            - "Saarland"
+            - "Sachsen"
+            - "Sachsen-Anhalt"
+            - "Schleswig-Holstein"
+            - "Thüringen"
+          example: "Bayern"
+        erp_system:
+          type: string
+          description: "ERP-System, nach dem gesucht werden soll"
+          enum:
+            - "Navision"
+            - "SAP R3"
+            - "AX 2012"
+            - "Pro Alpha"
+            - "S4 Hana"
+            - "Oracle"
+          example: "Navision"
+        employee_size:
+          type: string
+          description: "Mitarbeiterzahl-Kategorie"
+          enum:
+            - "unter_200"
+            - "200_500"
+            - "500_1000"
+            - "ueber_1000"
+          example: "200_500"
+        max_results:
+          type: integer
+          description: "Maximale Anzahl Leads (1–20)"
+          minimum: 1
+          maximum: 20
+          default: 10
+
+    LeadSearchResponse:
+      type: object
+      properties:
+        leads:
+          type: array
+          items:
+            $ref: '#/components/schemas/Lead'
+        total_found:
+          type: integer
+        search_criteria:
+          type: object
+        search_timestamp:
+          type: string
+          format: date-time
+
+    Lead:
+      type: object
+      properties:
+        id:
+          type: string
+        company_name:
+          type: string
+        website:
+          type: string
+          nullable: true
+        region:
+          type: string
+          nullable: true
+        employee_count_estimate:
+          type: string
+          nullable: true
+        industry:
+          type: string
+          nullable: true
+        erp_indicators:
+          type: array
+          items:
+            type: string
+        erp_evidence:
+          type: array
+          items:
+            type: string
+        lead_score:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: "Lead-Score: 0 = kalt, 100 = perfekter Lead"
+        lead_category:
+          type: string
+          enum:
+            - "hot"
+            - "warm"
+            - "cold"
+        qualification_notes:
+          type: string
+        contact_info:
+          $ref: '#/components/schemas/ContactInfo'
+        sources:
+          type: array
+          items:
+            type: string
+        migration_potential:
+          type: string
+          nullable: true
+          enum:
+            - "hoch"
+            - "mittel"
+            - "niedrig"
+            - "unbekannt"
+
+    ContactInfo:
+      type: object
+      properties:
+        email:
+          type: string
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        decision_maker_hints:
+          type: string
+          nullable: true

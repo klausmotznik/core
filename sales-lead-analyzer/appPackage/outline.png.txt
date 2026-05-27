@@ -1,0 +1,1 @@
+PLACEHOLDER: Replace this file with a 32x32 px PNG icon (outline/transparent version) for the Teams App.

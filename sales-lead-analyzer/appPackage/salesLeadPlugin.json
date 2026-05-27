@@ -1,0 +1,39 @@
+{
+  "$schema": "https://aka.ms/json-schemas/copilot/plugin/v2.4/schema.json",
+  "schema_version": "v2.4",
+  "name_for_human": "Sales Lead Analyzer",
+  "description_for_human": "Recherchiert und qualifiziert B2B Sales Leads im DACH-Markt nach Branche, Region, ERP-System und Unternehmensgröße.",
+  "description_for_model": "Sucht Unternehmen im DACH-Markt (Deutschland, Österreich, Schweiz und alle Bundesländer), analysiert deren Websites und Jobportal-Anzeigen auf Hinweise für eingesetzte ERP-Systeme (Navision, SAP R3, AX 2012, Pro Alpha, S4 Hana, Oracle) und qualifiziert die gefundenen Leads mit einem Score von 0-100. Gibt strukturierte Lead-Daten zurück: Unternehmen, Website, ERP-Hinweise, Score, Kategorie (hot/warm/cold), Kontaktdaten und Qualifizierungsnotizen.",
+  "logo_url": "https://YOUR_BACKEND_URL/static/logo.png",
+  "contact_email": "support@example.com",
+  "legal_info_url": "https://example.com/legal",
+  "functions": [
+    {
+      "name": "searchLeads",
+      "description": "Sucht und qualifiziert Sales Leads basierend auf Branche, Region, ERP-System und Mitarbeiterzahl. Analysiert Unternehmenswebsites und Jobportale (Stepstone, Indeed, Monster, XING, LinkedIn) auf ERP-Hinweise und gibt qualifizierte, nach Score sortierte Leads zurück.",
+      "capabilities": {
+        "response_semantics": {
+          "data_path": "$.leads",
+          "properties": {
+            "title": "$.company_name",
+            "subtitle": "$.lead_category",
+            "url": "$.website"
+          }
+        }
+      }
+    }
+  ],
+  "runtimes": [
+    {
+      "type": "OpenApi",
+      "auth": {
+        "type": "ApiKeyPluginVault",
+        "reference_id": "salesLeadApiKey"
+      },
+      "spec": {
+        "url": "openapi.yaml"
+      },
+      "run_for_functions": ["searchLeads"]
+    }
+  ]
+}
